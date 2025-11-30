@@ -2,7 +2,7 @@
   "name": "job-tracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sanaatawalbeh.github.io/Job-Tracker",
+  "homepage": "https://sanaatawalbeh.github.io/Intellagent-Job-Tracker-2",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

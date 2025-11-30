@@ -1,5 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Box, Button, Typography, Container, Grid, Paper } from "@mui/material";
 import {
   AccountCircle,
@@ -9,6 +10,48 @@ import {
 } from "@mui/icons-material";
 
 export default function Home() {
+  const mode = useSelector((state) => state.theme.mode);
+  const isDark = mode === "dark";
+
+  const primaryColor = "#C48CB3";
+  const secondaryColor = isDark ? "#E8B4D9" : "#A86B97";
+
+  const features = [
+    {
+      icon: <AccountCircle sx={{ fontSize: 50, color: primaryColor, mb: 1 }} />,
+      title: "Profile Management",
+      description: "View and edit your profile easily.",
+      gradient: isDark
+        ? "linear-gradient(145deg, #2D1B2E, #3A2442)"
+        : "linear-gradient(145deg, #FFE4EC, #FFD6E8)",
+    },
+    {
+      icon: <Assignment sx={{ fontSize: 50, color: primaryColor, mb: 1 }} />,
+      title: "Track Applications",
+      description: "Study your job applications and statuses in one place.",
+      gradient: isDark
+        ? "linear-gradient(145deg, #2A1A2C, #35213A)"
+        : "linear-gradient(145deg, #FFD6E8, #FFC1D9)",
+    },
+    {
+      icon: <Analytics sx={{ fontSize: 50, color: primaryColor, mb: 1 }} />,
+      title: "AI Insights",
+      description:
+        "Get AI-generated insights and statistics about your applications.",
+      gradient: isDark
+        ? "linear-gradient(145deg, #2C1B2A, #372133)"
+        : "linear-gradient(145deg, #FFD1B8, #FFE0CC)",
+    },
+    {
+      icon: <Edit sx={{ fontSize: 50, color: primaryColor, mb: 1 }} />,
+      title: "AI Resume Help",
+      description: "Improve your resume with AI suggestions.",
+      gradient: isDark
+        ? "linear-gradient(145deg, #2D1C2D, #382438)"
+        : "linear-gradient(145deg, #EFD1F2, #FFD6EB)",
+    },
+  ];
+
   return (
     <Container
       maxWidth="lg"
@@ -20,14 +63,21 @@ export default function Home() {
         justifyContent: "center",
         textAlign: "center",
         mb: 8,
+        background: isDark
+          ? "linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #0F0F0F 100%)"
+          : "linear-gradient(135deg, #FFFFFF 0%, #FAF5FF 50%, #FFFFFF 100%)",
       }}
     >
+      {/* Hero Section */}
       <Box
         sx={{
           display: "grid",
           placeItems: "center",
           minHeight: "40vh",
           py: 3,
+          background: isDark
+            ? "radial-gradient(circle at center, rgba(196,140,179,0.1) 0%, transparent 50%)"
+            : "radial-gradient(circle at center, rgba(196,140,179,0.08) 0%, transparent 50%)",
         }}
       >
         <Typography
@@ -37,8 +87,9 @@ export default function Home() {
             lineHeight: 1.15,
             letterSpacing: "-0.02em",
             fontSize: { xs: "28px", md: "56px" },
-            color: "text.primary",
-            mt:20,
+            color: isDark ? "#FFFFFF" : "#111827",
+            mt: 20,
+            textShadow: isDark ? "0 4px 8px rgba(0,0,0,0.3)" : "none",
           }}
         >
           Find your{" "}
@@ -48,9 +99,14 @@ export default function Home() {
               display: "inline-block",
               px: 1.5,
               borderRadius: "0.5em",
-              bgcolor: "#C48CB3",
-              color: "#fff",
-              boxShadow: "0 6px 20px rgba(59,130,246,0.25)",
+              background: isDark
+                ? "linear-gradient(135deg, #C48CB3 0%, #D8A8C8 100%)"
+                : "linear-gradient(135deg, #C48CB3 0%, #B87CA5 100%)",
+              color: "#FFFFFF",
+              boxShadow: isDark
+                ? "0 6px 20px rgba(196,140,179,0.4)"
+                : "0 6px 20px rgba(196,140,179,0.25)",
+              transform: "skew(-5deg)",
             }}
           >
             dream jobs
@@ -60,7 +116,12 @@ export default function Home() {
           <Box
             component="span"
             sx={{
-              color: "text.secondary",
+              background: isDark
+                ? "linear-gradient(135deg, #E8B4D9 0%, #D8A8C8 100%)"
+                : "linear-gradient(135deg, #A86B97 0%, #8A4C7A 100%)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
               fontWeight: 900,
             }}
           >
@@ -82,9 +143,22 @@ export default function Home() {
             borderRadius: "25px",
             fontWeight: 600,
             fontSize: "18px",
-            transition: "0.3s",
-            bgcolor: "#C48CB3",
-            "&:hover": { transform: "scale(1.05)" },
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            background: isDark
+              ? "linear-gradient(135deg, #C48CB3 0%, #D8A8C8 100%)"
+              : "linear-gradient(135deg, #C48CB3 0%, #B87CA5 100%)",
+            boxShadow: isDark
+              ? "0 8px 25px rgba(196,140,179,0.4)"
+              : "0 8px 25px rgba(196,140,179,0.3)",
+            "&:hover": {
+              transform: "translateY(-3px) scale(1.05)",
+              boxShadow: isDark
+                ? "0 12px 35px rgba(196,140,179,0.5)"
+                : "0 12px 35px rgba(196,140,179,0.4)",
+              background: isDark
+                ? "linear-gradient(135deg, #D8A8C8 0%, #C48CB3 100%)"
+                : "linear-gradient(135deg, #B87CA5 0%, #C48CB3 100%)",
+            },
           }}
         >
           Register
@@ -101,14 +175,22 @@ export default function Home() {
             borderRadius: "25px",
             fontWeight: 600,
             fontSize: "18px",
-            transition: "0.3s",
-            color: "#C48CB3",
-            borderColor: "#C48CB3",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            color: primaryColor,
+            borderColor: primaryColor,
+            borderWidth: "2px",
+            background: isDark ? "rgba(196,140,179,0.05)" : "transparent",
             "&:hover": {
-              bgcolor: "#C48CB3",
-              color: "#fff",
-              transform: "scale(1.05)",
-              borderColor: "#C48CB3",
+              background: isDark
+                ? "rgba(196,140,179,0.15)"
+                : "rgba(196,140,179,0.08)",
+              borderColor: isDark ? "#D8A8C8" : "#B87CA5",
+              color: isDark ? "#E8B4D9" : "#A86B97",
+              transform: "translateY(-3px) scale(1.05)",
+              boxShadow: isDark
+                ? "0 8px 25px rgba(196,140,179,0.3)"
+                : "0 8px 25px rgba(196,140,179,0.2)",
+              borderWidth: "2px",
             },
           }}
         >
@@ -121,113 +203,93 @@ export default function Home() {
         <Typography
           variant="h4"
           fontWeight={700}
-          sx={{ mb: 4, color: "#C48CB3", textAlign: "center" }}
+          sx={{
+            mb: 4,
+            background: isDark
+              ? "linear-gradient(135deg, #E8B4D9 0%, #D8A8C8 100%)"
+              : "linear-gradient(135deg, #C48CB3 0%, #A86B97 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textAlign: "center",
+            fontSize: { xs: "2rem", md: "2.5rem" },
+          }}
         >
           Features
         </Typography>
 
         <Grid container spacing={4} justifyContent="center">
-          {/* Feature 1 */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: "20px",
-                textAlign: "center",
-                bgcolor: "linear-gradient(145deg, #FFE4EC, #FFD6E8)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 12px 25px rgba(0,0,0,0.2)",
-                },
-              }}
-            >
-              <AccountCircle sx={{ fontSize: 50, color: "#C48CB3", mb: 1 }} />
-              <Typography variant="h6" fontWeight={600} gutterBottom>
-                Profile Management
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                View and edit your profile easily.
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Feature 2 */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: "20px",
-                textAlign: "center",
-                bgcolor: "linear-gradient(145deg, #FFD6E8, #FFC1D9)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 12px 25px rgba(0,0,0,0.2)",
-                },
-              }}
-            >
-              <Assignment sx={{ fontSize: 50, color: "#C48CB3", mb: 1 }} />
-              <Typography variant="h6" fontWeight={600} gutterBottom>
-                Track Applications
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Study your job applications and statuses in one place.
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Feature 3 */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: "20px",
-                textAlign: "center",
-                bgcolor: "linear-gradient(145deg, #FFD1B8, #FFE0CC)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 12px 25px rgba(0,0,0,0.2)",
-                },
-              }}
-            >
-              <Analytics sx={{ fontSize: 50, color: "#C48CB3", mb: 1 }} />
-              <Typography variant="h6" fontWeight={600} gutterBottom>
-                AI Insights
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Get AI-generated insights and statistics about your
-                applications.
-              </Typography>
-            </Paper>
-          </Grid>
-
-          {/* Feature 4 */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: "20px",
-                textAlign: "center",
-                bgcolor: "linear-gradient(145deg, #EFD1F2, #FFD6EB)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 12px 25px rgba(0,0,0,0.2)",
-                },
-              }}
-            >
-              <Edit sx={{ fontSize: 50, color: "#C48CB3", mb: 1 }} />
-              <Typography variant="h6" fontWeight={600} gutterBottom>
-                AI Resume Help
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Improve your resume with AI suggestions.
-              </Typography>
-            </Paper>
-          </Grid>
+          {features.map((feature, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Paper
+                sx={{
+                  p: 3,
+                  borderRadius: "20px",
+                  textAlign: "center",
+                  background: feature.gradient,
+                  transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                  border: isDark
+                    ? "1px solid rgba(255,255,255,0.1)"
+                    : "1px solid rgba(0,0,0,0.05)",
+                  boxShadow: isDark
+                    ? "0 8px 25px rgba(0,0,0,0.3)"
+                    : "0 8px 25px rgba(0,0,0,0.1)",
+                  "&:hover": {
+                    transform: "translateY(-8px) scale(1.02)",
+                    boxShadow: isDark
+                      ? "0 20px 40px rgba(196,140,179,0.3)"
+                      : "0 20px 40px rgba(196,140,179,0.2)",
+                  },
+                }}
+              >
+                {feature.icon}
+                <Typography
+                  variant="h6"
+                  fontWeight={600}
+                  gutterBottom
+                  sx={{
+                    color: isDark ? "#FFFFFF" : "#111827",
+                  }}
+                >
+                  {feature.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: isDark ? "#D1D5DB" : "#6B7280",
+                  }}
+                >
+                  {feature.description}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
+      </Box>
+
+      {/* Additional CTA Section */}
+      <Box sx={{ mt: 8, textAlign: "center" }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 600,
+            color: isDark ? "#E5E7EB" : "#374151",
+            mb: 2,
+          }}
+        >
+          Ready to start your journey?
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            color: isDark ? "#9CA3AF" : "#6B7280",
+            mb: 3,
+            maxWidth: 600,
+          }}
+        >
+          Join thousands of professionals who found their dream jobs through
+          CareerHive
+        </Typography>
       </Box>
     </Container>
   );

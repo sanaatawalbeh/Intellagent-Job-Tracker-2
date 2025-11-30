@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -9,7 +10,15 @@ import {
   Typography,
   Chip,
   CircularProgress,
+  Alert,
+  Fade,
 } from "@mui/material";
+import {
+  Psychology,
+  AutoFixHigh,
+  TrendingUp,
+  Warning,
+} from "@mui/icons-material";
 
 export default function ResumeFeedback() {
   const [text, setText] = useState("");
@@ -17,8 +26,19 @@ export default function ResumeFeedback() {
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
+  const mode = useSelector((state) => state.theme.mode);
+  const isDark = mode === "dark";
+
+  const primaryColor = "#C48CB3";
+  const secondaryColor = isDark ? "#E8B4D9" : "#A86B97";
+
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!text.trim()) {
+      setError("Please enter your resume text");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
@@ -45,217 +65,259 @@ export default function ResumeFeedback() {
     }
   }
 
+  const textFieldSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px",
+      background: isDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.8)",
+      "&:hover fieldset": {
+        borderColor: primaryColor,
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: primaryColor,
+        borderWidth: "2px",
+      },
+    },
+    "& .MuiInputLabel-root": {
+      color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+    },
+  };
+
+  const sectionIcons = {
+    grammar: <AutoFixHigh />,
+    strengths: <TrendingUp />,
+    weaknesses: <Warning />,
+    keywords: <Psychology />,
+  };
+
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        ml: { sm: "36.2px" },
-        py: 4,
-      }}
-    >
-      <Container maxWidth="md">
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Header */}
+      <Box sx={{ textAlign: "center", mb: 4 }}>
+        <Psychology
+          sx={{
+            fontSize: 48,
+            color: primaryColor,
+            mb: 2,
+          }}
+        />
         <Typography
           variant="h4"
-          fontWeight="bold"
-          gutterBottom
-          sx={{ color: "#C48CB3" }}
+          fontWeight={700}
+          sx={{
+            color: isDark ? "#FFFFFF" : "#000000",
+            mb: 1,
+          }}
         >
-          Resume Feedback
+          AI Resume Feedback
         </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+          }}
+        >
+          Get instant AI-powered feedback to improve your resume
+        </Typography>
+      </Box>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
+      {/* Input Form */}
+      <Paper
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: "16px",
+          background: isDark
+            ? "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)"
+            : "linear-gradient(135deg, #FFFFFF 0%, #FDFCFD 100%)",
+          border: isDark
+            ? "1px solid rgba(255,255,255,0.1)"
+            : "1px solid rgba(0,0,0,0.08)",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Box component="form" onSubmit={handleSubmit}>
           <TextField
             label="Paste your resume text here..."
             value={text}
             onChange={(e) => setText(e.target.value)}
             multiline
-            rows={10}
+            rows={8}
             fullWidth
             required
-            sx={{
-              "& label.Mui-focused": { color: "#C48CB3" },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#C48CB3" },
-                "&:hover fieldset": { borderColor: "#9F6496" },
-                "&.Mui-focused fieldset": { borderColor: "#C48CB3" },
-                width: 1000,
-              },
-            }}
+            sx={textFieldSx}
           />
 
-          <Box mt={2} display="flex" alignItems="center" gap={2}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
             <Button
               type="submit"
               variant="contained"
               disabled={loading}
               sx={{
-                borderRadius: "16px",
-                bgcolor: "#C48CB3",
-                width: 250,
-                ml: "40%",
-
-                "&:hover": { bgcolor: "#9F6496" },
+                borderRadius: "12px",
+                px: 4,
+                py: 1.2,
+                fontSize: "16px",
+                fontWeight: 600,
+                background: isDark
+                  ? "linear-gradient(135deg, #C48CB3 0%, #E8B4D9 100%)"
+                  : "linear-gradient(135deg, #C48CB3 0%, #A86B97 100%)",
+                boxShadow: "0 4px 15px rgba(196,140,179,0.3)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 6px 20px rgba(196,140,179,0.4)",
+                },
+                "&:disabled": {
+                  background: isDark
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(0,0,0,0.1)",
+                },
               }}
             >
               {loading ? (
-                <CircularProgress size={24} sx={{ color: "#C48CB3" }} />
+                <CircularProgress size={24} sx={{ color: "#FFFFFF" }} />
               ) : (
                 "Analyze Resume"
               )}
             </Button>
+
             {error && (
-              <Typography color="error" variant="body2">
+              <Alert severity="error" sx={{ flex: 1 }}>
                 {error}
-              </Typography>
+              </Alert>
             )}
           </Box>
         </Box>
+      </Paper>
 
-        {result && (
-          <Box
-            sx={{
-              p: 3,
-              borderRadius: "20px",
-              bgcolor: "#C48CB3",
-              display: "grid",
-              gap: 3,
-              width: 1000,
-            }}
-          >
+      {/* Results */}
+      {result && (
+        <Fade in={true} timeout={500}>
+          <Box>
             <Typography
               variant="h5"
-              fontWeight="bold"
-              sx={{ color: "#fff", textAlign: "center" }}
+              fontWeight={700}
+              sx={{
+                color: isDark ? "#FFFFFF" : "#000000",
+                mb: 3,
+                textAlign: "center",
+              }}
             >
-              AI Result
+              Analysis Results
             </Typography>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    borderRadius: "16px",
-                    border: "1px solid #C48CB3",
-                    bgcolor: "#fff", // خلفية بيضاء داخل كل Paper
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ color: "#C48CB3" }}
+            <Grid container spacing={3}>
+              {[
+                { key: "grammar", title: "Grammar & Style" },
+                { key: "strengths", title: "Strengths" },
+                { key: "weaknesses", title: "Areas for Improvement" },
+                { key: "keywords", title: "Suggested Keywords" },
+              ].map((section) => (
+                <Grid item xs={12} md={6} key={section.key}>
+                  <Paper
+                    sx={{
+                      p: 3,
+                      borderRadius: "16px",
+                      background: isDark
+                        ? "rgba(255,255,255,0.05)"
+                        : "rgba(255,255,255,0.8)",
+                      border: isDark
+                        ? "1px solid rgba(255,255,255,0.1)"
+                        : "1px solid rgba(0,0,0,0.08)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      height: "100%",
+                    }}
                   >
-                    Grammar
-                  </Typography>
-                  <ul>
-                    {Array.isArray(result.grammar) ? (
-                      result.grammar.map((g, i) => <li key={i}>{g}</li>)
-                    ) : typeof result.grammar === "object" &&
-                      result.grammar !== null ? (
-                      Object.values(result.grammar).map((g, i) => (
-                        <li key={i}>{g}</li>
-                      ))
-                    ) : (
-                      <li>{String(result.grammar || "—")}</li>
-                    )}
-                  </ul>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    borderRadius: "16px",
-                    border: "1px solid #C48CB3",
-                    bgcolor: "#fff",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ color: "#C48CB3" }}
-                  >
-                    Strengths
-                  </Typography>
-                  <ul>
-                    {Array.isArray(result.strengths) ? (
-                      result.strengths.map((g, i) => <li key={i}>{g}</li>)
-                    ) : (
-                      <li>{String(result.strengths || "—")}</li>
-                    )}
-                  </ul>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    borderRadius: "16px",
-                    border: "1px solid #C48CB3",
-                    bgcolor: "#fff",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ color: "#C48CB3" }}
-                  >
-                    Weaknesses
-                  </Typography>
-                  <ul>
-                    {Array.isArray(result.weaknesses) ? (
-                      result.weaknesses.map((g, i) => <li key={i}>{g}</li>)
-                    ) : (
-                      <li>{String(result.weaknesses || "—")}</li>
-                    )}
-                  </ul>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    borderRadius: "16px",
-                    border: "1px solid #C48CB3",
-                    bgcolor: "#fff",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ color: "#C48CB3" }}
-                  >
-                    Suggested Keywords
-                  </Typography>
-                  <Box display="flex" flexWrap="wrap" gap={1}>
-                    {Array.isArray(result.keywords) ? (
-                      result.keywords.map((k, i) => (
-                        <Chip
-                          key={i}
-                          label={k}
-                          variant="outlined"
-                          sx={{
-                            borderColor: "#C48CB3",
-                            color: "#C48CB3",
-                            fontWeight: 500,
-                          }}
-                        />
-                      ))
-                    ) : (
-                      <Typography variant="body2">
-                        {String(result.keywords || "—")}
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: "10px",
+                          background: `${primaryColor}20`,
+                          color: primaryColor,
+                          mr: 2,
+                        }}
+                      >
+                        {sectionIcons[section.key]}
+                      </Box>
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        sx={{
+                          color: isDark ? "#FFFFFF" : "#000000",
+                        }}
+                      >
+                        {section.title}
                       </Typography>
+                    </Box>
+
+                    {section.key === "keywords" ? (
+                      <Box display="flex" flexWrap="wrap" gap={1}>
+                        {Array.isArray(result.keywords) ? (
+                          result.keywords.map((k, i) => (
+                            <Chip
+                              key={i}
+                              label={k}
+                              size="small"
+                              sx={{
+                                background: isDark
+                                  ? "rgba(196,140,179,0.2)"
+                                  : "rgba(196,140,179,0.1)",
+                                color: isDark ? "#E8B4D9" : "#A86B97",
+                                fontWeight: 500,
+                                border: `1px solid ${primaryColor}40`,
+                              }}
+                            />
+                          ))
+                        ) : (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: isDark
+                                ? "rgba(255,255,255,0.7)"
+                                : "rgba(0,0,0,0.6)",
+                            }}
+                          >
+                            {String(result.keywords || "No keywords suggested")}
+                          </Typography>
+                        )}
+                      </Box>
+                    ) : (
+                      <Box
+                        component="ul"
+                        sx={{
+                          pl: 2,
+                          m: 0,
+                          "& li": {
+                            color: isDark
+                              ? "rgba(255,255,255,0.8)"
+                              : "rgba(0,0,0,0.8)",
+                            mb: 0.5,
+                            lineHeight: 1.6,
+                          },
+                        }}
+                      >
+                        {Array.isArray(result[section.key]) ? (
+                          result[section.key].map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))
+                        ) : typeof result[section.key] === "object" &&
+                          result[section.key] !== null ? (
+                          Object.values(result[section.key]).map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))
+                        ) : (
+                          <li>{String(result[section.key] || "No data")}</li>
+                        )}
+                      </Box>
                     )}
-                  </Box>
-                </Paper>
-              </Grid>
+                  </Paper>
+                </Grid>
+              ))}
             </Grid>
           </Box>
-        )}
-      </Container>
-    </Box>
+        </Fade>
+      )}
+    </Container>
   );
 }
