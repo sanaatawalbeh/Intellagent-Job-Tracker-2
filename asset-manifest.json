@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Intellagent-Job-Tracker-2/static/css/main.2b2aa034.css",
-    "main.js": "/Intellagent-Job-Tracker-2/static/js/main.f84ecd68.js",
+    "main.js": "/Intellagent-Job-Tracker-2/static/js/main.3bd59156.js",
     "static/js/453.b5052ffa.chunk.js": "/Intellagent-Job-Tracker-2/static/js/453.b5052ffa.chunk.js",
     "index.html": "/Intellagent-Job-Tracker-2/index.html",
     "main.2b2aa034.css.map": "/Intellagent-Job-Tracker-2/static/css/main.2b2aa034.css.map",
-    "main.f84ecd68.js.map": "/Intellagent-Job-Tracker-2/static/js/main.f84ecd68.js.map",
+    "main.3bd59156.js.map": "/Intellagent-Job-Tracker-2/static/js/main.3bd59156.js.map",
     "453.b5052ffa.chunk.js.map": "/Intellagent-Job-Tracker-2/static/js/453.b5052ffa.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2b2aa034.css",
-    "static/js/main.f84ecd68.js"
+    "static/js/main.3bd59156.js"
   ]
 }
