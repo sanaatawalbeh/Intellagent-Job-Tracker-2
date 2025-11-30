@@ -26,9 +26,20 @@ import {
   TableContainer,
   FormControl,
   InputLabel,
+  Box,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setApplications } from "../../redux/applicationsSlice";
+import {
+  Delete,
+  FilterList,
+  Analytics,
+  Business,
+  Work,
+  CheckCircle,
+  Cancel,
+  Schedule,
+} from "@mui/icons-material";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -37,6 +48,11 @@ export default function Dashboard() {
 
   const dispatch = useDispatch();
   const applications = useSelector((state) => state.applications.list);
+  const mode = useSelector((state) => state.theme.mode);
+  const isDark = mode === "dark";
+
+  const primaryColor = "#C48CB3";
+  const secondaryColor = isDark ? "#E8B4D9" : "#A86B97";
 
   useEffect(() => {
     let unsubscribeSnapshot = () => {};
@@ -92,148 +108,319 @@ export default function Dashboard() {
     rejected: applications.filter((a) => a.status === "rejected").length,
   };
 
+  const statIcons = {
+    applied: <Work sx={{ fontSize: 24 }} />,
+    interview: <Schedule sx={{ fontSize: 24 }} />,
+    accepted: <CheckCircle sx={{ fontSize: 24 }} />,
+    rejected: <Cancel sx={{ fontSize: 24 }} />,
+  };
+
+  const statusColors = {
+    applied: isDark ? "#83A6CE" : "#83A6CE",
+    interview: isDark ? "#E5C9D7" : "#E5C9D7",
+    accepted: isDark ? "#4CAF50" : "#4CAF50",
+    rejected: isDark ? "#f44336" : "#f44336",
+  };
+
   if (loading) return <Typography>Loading...</Typography>;
   if (!user) return <Typography>Please log in</Typography>;
 
-  const cardColors = {
-    applied: "#83A6CE",
-    interview: "#E5C9D7",
-    accepted: "#a6f5aaff",
-    rejected: "#C48CB3",
-  };
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, ml: 29 }}>
-      <Typography
-        variant="h5"
-        sx={{ mb: 2, fontWeight: 700, color: "#C48CB3", textAlign: "center" }}
-      >
-        Application Summary (AI)
-      </Typography>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Header */}
+      <Box sx={{ textAlign: "center", mb: 4 }}>
+        <Analytics
+          sx={{
+            fontSize: 48,
+            color: primaryColor,
+            mb: 2,
+          }}
+        />
+        <Typography
+          variant="h4"
+          fontWeight={700}
+          sx={{
+            color: isDark ? "#FFFFFF" : "#000000",
+            mb: 1,
+          }}
+        >
+          Applications Dashboard
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+          }}
+        >
+          Track and manage your job applications
+        </Typography>
+      </Box>
 
-      <Grid container spacing={2} justifyContent="center" mb={4}>
+      {/* Stats Cards */}
+      <Grid container spacing={2} sx={{ mb: 4 }}>
         {Object.entries(stats).map(([key, value]) => (
           <Grid item xs={6} sm={3} key={key}>
             <Paper
               sx={{
-                p: 2,
+                p: 3,
                 borderRadius: "16px",
-                bgcolor: cardColors[key], // هنا لون الخلفية
+                background: isDark
+                  ? "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)"
+                  : "linear-gradient(135deg, #FFFFFF 0%, #FDFCFD 100%)",
+                border: isDark
+                  ? "1px solid rgba(255,255,255,0.1)"
+                  : "1px solid rgba(0,0,0,0.08)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 textAlign: "center",
-                color: "#fff",
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </Typography>
-              <Typography variant="h4" fontWeight="bold">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: "12px",
+                    background: `${statusColors[key]}20`,
+                    color: statusColors[key],
+                  }}
+                >
+                  {statIcons[key]}
+                </Box>
+              </Box>
+              <Typography
+                variant="h3"
+                fontWeight={800}
+                sx={{
+                  color: isDark ? "#FFFFFF" : "#000000",
+                  mb: 1,
+                }}
+              >
                 {value}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+                  fontWeight: 600,
+                  textTransform: "capitalize",
+                }}
+              >
+                {key}
               </Typography>
             </Paper>
           </Grid>
         ))}
       </Grid>
 
-      <Typography
-        variant="h5"
-        sx={{ mb: 2, fontWeight: 700, color: "#C48CB3", textAlign: "center" }}
-      ></Typography>
-
-      {/* جدول */}
-      <TableContainer
-        component={Paper}
+      {/* Applications Table */}
+      <Paper
         sx={{
-          p: 2,
-          mx: "auto",
-          maxWidth: "90%",
-          borderRadius: "15px",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
-          background: "linear-gradient(145deg, #fff, #fdf4fa)",
+          borderRadius: "16px",
+          background: isDark
+            ? "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)"
+            : "linear-gradient(135deg, #FFFFFF 0%, #FDFCFD 100%)",
+          border: isDark
+            ? "1px solid rgba(255,255,255,0.1)"
+            : "1px solid rgba(0,0,0,0.08)",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          overflow: "hidden",
         }}
       >
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={2}
+        {/* Table Header */}
+        <Box
+          sx={{
+            p: 3,
+            borderBottom: isDark
+              ? "1px solid rgba(255,255,255,0.1)"
+              : "1px solid rgba(0,0,0,0.08)",
+          }}
         >
-          <Typography variant="h6" sx={{ color: "#C48CB3", fontWeight: 700 }}>
-            Application Details
-          </Typography>
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel>Status Filter</InputLabel>
-            <Select
-              value={filter}
-              label="Status Filter"
-              onChange={(e) => setFilter(e.target.value)}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                color: isDark ? "#FFFFFF" : "#000000",
+                fontWeight: 700,
+              }}
             >
-              <MenuItem value="all">All</MenuItem>
-              <MenuItem value="applied">Applied</MenuItem>
-              <MenuItem value="interview">Interview</MenuItem>
-              <MenuItem value="accepted">Accepted</MenuItem>
-              <MenuItem value="rejected">Rejected</MenuItem>
-            </Select>
-          </FormControl>
-        </Stack>
-
-        <Table>
-          <TableHead>
-            <TableRow sx={{ bgcolor: "#C48CB3" }}>
-              <TableCell sx={{ color: "#fff", fontWeight: 600 }}>
-                Company
-              </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 600 }}>
-                Position
-              </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 600 }}>
-                Status
-              </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 600 }}>
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredApplications.map((app, index) => (
-              <TableRow
-                key={app.id}
+              Application Details
+            </Typography>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <InputLabel
                 sx={{
-                  bgcolor: index % 2 === 0 ? "#FFFFFF" : "#F9F5FB", // ألوان الصفوف
-                  "&:hover": { bgcolor: "#F3E8F4" }, // تأثير عند المرور بالماوس
+                  color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
                 }}
               >
-                <TableCell>{app.company}</TableCell>
-                <TableCell>{app.position}</TableCell>
-                <TableCell>
-                  <Select
-                    value={app.status}
-                    onChange={(e) => handleStatusChange(app.id, e.target.value)}
-                    size="small"
-                  >
-                    <MenuItem value="applied">Applied</MenuItem>
-                    <MenuItem value="interview">Interview</MenuItem>
-                    <MenuItem value="accepted">Accepted</MenuItem>
-                    <MenuItem value="rejected">Rejected</MenuItem>
-                  </Select>
+                Status Filter
+              </InputLabel>
+              <Select
+                value={filter}
+                label="Status Filter"
+                onChange={(e) => setFilter(e.target.value)}
+                sx={{
+                  color: isDark ? "#FFFFFF" : "#000000",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: isDark
+                      ? "rgba(255,255,255,0.3)"
+                      : "rgba(0,0,0,0.3)",
+                  },
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="applied">Applied</MenuItem>
+                <MenuItem value="interview">Interview</MenuItem>
+                <MenuItem value="accepted">Accepted</MenuItem>
+                <MenuItem value="rejected">Rejected</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+        </Box>
+
+        {/* Table */}
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow
+                sx={{
+                  background: isDark
+                    ? "rgba(196,140,179,0.2)"
+                    : "rgba(196,140,179,0.1)",
+                }}
+              >
+                <TableCell
+                  sx={{
+                    color: isDark ? "#FFFFFF" : "#000000",
+                    fontWeight: 600,
+                  }}
+                >
+                  Company
                 </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{
-                      bgcolor: "#C48CB3",
-                      color: "#fff",
-                      "&:hover": { bgcolor: "#9F6496" },
-                    }}
-                    onClick={() => handleDelete(app.id)}
-                  >
-                    Delete
-                  </Button>
+                <TableCell
+                  sx={{
+                    color: isDark ? "#FFFFFF" : "#000000",
+                    fontWeight: 600,
+                  }}
+                >
+                  Position
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: isDark ? "#FFFFFF" : "#000000",
+                    fontWeight: 600,
+                  }}
+                >
+                  Status
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: isDark ? "#FFFFFF" : "#000000",
+                    fontWeight: 600,
+                  }}
+                >
+                  Actions
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {filteredApplications.map((app, index) => (
+                <TableRow
+                  key={app.id}
+                  sx={{
+                    background:
+                      index % 2 === 0
+                        ? isDark
+                          ? "rgba(255,255,255,0.02)"
+                          : "rgba(0,0,0,0.02)"
+                        : "transparent",
+                    "&:hover": {
+                      background: isDark
+                        ? "rgba(255,255,255,0.05)"
+                        : "rgba(0,0,0,0.04)",
+                    },
+                  }}
+                >
+                  <TableCell
+                    sx={{
+                      color: isDark ? "#FFFFFF" : "#000000",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Business
+                        sx={{
+                          color: primaryColor,
+                          fontSize: 20,
+                        }}
+                      />
+                      {app.company}
+                    </Box>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: isDark ? "#FFFFFF" : "#000000",
+                    }}
+                  >
+                    {app.position}
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      value={app.status}
+                      onChange={(e) =>
+                        handleStatusChange(app.id, e.target.value)
+                      }
+                      size="small"
+                      sx={{
+                        minWidth: 120,
+                        color: isDark ? "#FFFFFF" : "#000000",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: isDark
+                            ? "rgba(255,255,255,0.3)"
+                            : "rgba(0,0,0,0.3)",
+                        },
+                      }}
+                    >
+                      <MenuItem value="applied">Applied</MenuItem>
+                      <MenuItem value="interview">Interview</MenuItem>
+                      <MenuItem value="accepted">Accepted</MenuItem>
+                      <MenuItem value="rejected">Rejected</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<Delete />}
+                      onClick={() => handleDelete(app.id)}
+                      sx={{
+                        borderColor: isDark ? "#f44336" : "#f44336",
+                        color: isDark ? "#f44336" : "#f44336",
+                        "&:hover": {
+                          borderColor: isDark ? "#d32f2f" : "#d32f2f",
+                          background: isDark
+                            ? "rgba(244,67,54,0.1)"
+                            : "rgba(244,67,54,0.04)",
+                        },
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     </Container>
   );
 }
