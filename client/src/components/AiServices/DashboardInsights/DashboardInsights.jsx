@@ -77,11 +77,14 @@ export default function DashboardInsights() {
     setInsightLoading(true);
     setError(null);
     try {
-      const res = await fetch("http://localhost:5000/api/dashboard-insights", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ stats: statsData }),
-      });
+      const res = await fetch(
+        "https://intellagent-job-tracker-2.onrender.com/api/dashboard-insights",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ stats: statsData }),
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch insight");
       const data = await res.json();
       setInsight(data);

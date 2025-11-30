@@ -44,11 +44,14 @@ export default function ResumeFeedback() {
     setResult(null);
 
     try {
-      const res = await fetch("http://localhost:5000/api/resume-feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
+      const res = await fetch(
+        "https://intellagent-job-tracker-2.onrender.com/api/resume-feedback",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        }
+      );
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
