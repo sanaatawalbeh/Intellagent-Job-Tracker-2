@@ -46,5 +46,4 @@ From **Saturday to Wednesday** → about **4 days**.
 
 ## 🌐 Live Demo
 
-- **Frontend (GitHub Pages):**  
   👉 https://sanaatawalbeh.github.io/Intellagent-Job-Tracker-2
