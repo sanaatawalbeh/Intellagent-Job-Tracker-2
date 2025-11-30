@@ -107,6 +107,32 @@ export default function CareerChatbot() {
     "What skills are in demand for software developers?",
   ];
 
+  const textFieldSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px",
+      background: isDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.8)",
+      "&:hover fieldset": {
+        borderColor: primaryColor,
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: primaryColor,
+        borderWidth: "2px",
+      },
+      // إضافة لون النص للوضع الداكن
+      color: isDark ? "#FFFFFF" : "#000000",
+    },
+    "& .MuiInputLabel-root": {
+      color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+    },
+    // إضافة لون النص للمحتوى المكتوب
+    "& .MuiOutlinedInput-input": {
+      color: isDark ? "#FFFFFF" : "#000000",
+      "&::placeholder": {
+        color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)",
+      },
+    },
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header */}
@@ -349,26 +375,7 @@ export default function CareerChatbot() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "12px",
-                      background: isDark
-                        ? "rgba(255,255,255,0.05)"
-                        : "rgba(255,255,255,0.8)",
-                      "&:hover fieldset": {
-                        borderColor: primaryColor,
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: primaryColor,
-                        borderWidth: "2px",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: isDark
-                        ? "rgba(255,255,255,0.7)"
-                        : "rgba(0,0,0,0.6)",
-                    },
-                  }}
+                  sx={textFieldSx}
                 />
 
                 <IconButton
@@ -417,7 +424,15 @@ export default function CareerChatbot() {
               </Box>
 
               {error && (
-                <Alert severity="error" sx={{ mt: 2, borderRadius: "12px" }}>
+                <Alert
+                  severity="error"
+                  sx={{
+                    mt: 2,
+                    borderRadius: "12px",
+                    background: isDark ? "rgba(211,47,47,0.1)" : undefined,
+                    color: isDark ? "#ff5252" : undefined,
+                  }}
+                >
                   {error}
                 </Alert>
               )}

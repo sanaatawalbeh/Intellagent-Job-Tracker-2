@@ -4,19 +4,23 @@ import {
   Box,
   Button,
   Container,
+  Grid,
   Paper,
   TextField,
   Typography,
   Chip,
   CircularProgress,
-  LinearProgress,
-  Grid,
   Alert,
   Fade,
 } from "@mui/material";
-import { Work, Psychology, TrendingUp, AutoFixHigh } from "@mui/icons-material";
+import {
+  Psychology,
+  AutoFixHigh,
+  TrendingUp,
+  Warning,
+} from "@mui/icons-material";
 
-export default function JobAnalyzer() {
+export default function ResumeFeedback() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -31,7 +35,7 @@ export default function JobAnalyzer() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!text.trim()) {
-      setError("Please enter a job description");
+      setError("Please enter your resume text");
       return;
     }
 
@@ -41,7 +45,7 @@ export default function JobAnalyzer() {
 
     try {
       const res = await fetch(
-        "https://intellagent-job-tracker-2.onrender.com/api/job-analyze",
+        "https://intellagent-job-tracker-2.onrender.com/api/resume-feedback",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -75,23 +79,33 @@ export default function JobAnalyzer() {
         borderColor: primaryColor,
         borderWidth: "2px",
       },
+      // إضافة لون النص للوضع الداكن
+      color: isDark ? "#FFFFFF" : "#000000",
     },
     "& .MuiInputLabel-root": {
       color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
     },
+    // إضافة لون النص للمحتوى المكتوب
+    "& .MuiOutlinedInput-input": {
+      color: isDark ? "#FFFFFF" : "#000000",
+      "&::placeholder": {
+        color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)",
+      },
+    },
   };
 
-  const getSuitabilityColor = (score) => {
-    if (score >= 80) return "#4CAF50";
-    if (score >= 60) return "#FFC107";
-    return "#f44336";
+  const sectionIcons = {
+    grammar: <AutoFixHigh />,
+    strengths: <TrendingUp />,
+    weaknesses: <Warning />,
+    keywords: <Psychology />,
   };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ textAlign: "center", mb: 4 }}>
-        <Work
+        <Psychology
           sx={{
             fontSize: 48,
             color: primaryColor,
@@ -106,7 +120,7 @@ export default function JobAnalyzer() {
             mb: 1,
           }}
         >
-          AI Job Analyzer
+          AI Resume Feedback
         </Typography>
         <Typography
           variant="body1"
@@ -114,7 +128,7 @@ export default function JobAnalyzer() {
             color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
           }}
         >
-          Analyze job descriptions and find the best opportunities
+          Get instant AI-powered feedback to improve your resume
         </Typography>
       </Box>
 
@@ -133,23 +147,19 @@ export default function JobAnalyzer() {
           boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
         }}
       >
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
+        <Box component="form" onSubmit={handleSubmit}>
           <TextField
-            label="Paste job description here..."
-            multiline
-            rows={6}
+            label="Paste your resume text here..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            multiline
+            rows={8}
             fullWidth
             required
             sx={textFieldSx}
           />
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
             <Button
               type="submit"
               variant="contained"
@@ -179,7 +189,7 @@ export default function JobAnalyzer() {
               {loading ? (
                 <CircularProgress size={24} sx={{ color: "#FFFFFF" }} />
               ) : (
-                "Analyze Job"
+                "Analyze Resume"
               )}
             </Button>
 
@@ -209,243 +219,113 @@ export default function JobAnalyzer() {
             </Typography>
 
             <Grid container spacing={3}>
-              {/* Required Skills */}
-              <Grid item xs={12} md={6}>
-                <Paper
-                  sx={{
-                    p: 3,
-                    borderRadius: "16px",
-                    background: isDark
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(255,255,255,0.8)",
-                    border: isDark
-                      ? "1px solid rgba(255,255,255,0.1)"
-                      : "1px solid rgba(0,0,0,0.08)",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                    height: "100%",
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Box
-                      sx={{
-                        p: 1,
-                        borderRadius: "10px",
-                        background: `${primaryColor}20`,
-                        color: primaryColor,
-                        mr: 2,
-                      }}
-                    >
-                      <Psychology />
-                    </Box>
-                    <Typography
-                      variant="h6"
-                      fontWeight={600}
-                      sx={{
-                        color: isDark ? "#FFFFFF" : "#000000",
-                      }}
-                    >
-                      Required Skills
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    component="ul"
+              {[
+                { key: "grammar", title: "Grammar & Style" },
+                { key: "strengths", title: "Strengths" },
+                { key: "weaknesses", title: "Areas for Improvement" },
+                { key: "keywords", title: "Suggested Keywords" },
+              ].map((section) => (
+                <Grid item xs={12} md={6} key={section.key}>
+                  <Paper
                     sx={{
-                      pl: 2,
-                      m: 0,
-                      "& li": {
-                        color: isDark
-                          ? "rgba(255,255,255,0.8)"
-                          : "rgba(0,0,0,0.8)",
-                        mb: 0.5,
-                        lineHeight: 1.6,
-                      },
+                      p: 3,
+                      borderRadius: "16px",
+                      background: isDark
+                        ? "rgba(255,255,255,0.05)"
+                        : "rgba(255,255,255,0.8)",
+                      border: isDark
+                        ? "1px solid rgba(255,255,255,0.1)"
+                        : "1px solid rgba(0,0,0,0.08)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      height: "100%",
                     }}
                   >
-                    {Array.isArray(result.skills) ? (
-                      result.skills.map((s, i) => <li key={i}>{s}</li>)
-                    ) : typeof result.skills === "object" &&
-                      result.skills !== null ? (
-                      Object.values(result.skills).map((s, i) => (
-                        <li key={i}>{s}</li>
-                      ))
-                    ) : (
-                      <li>{String(result.skills || "No skills identified")}</li>
-                    )}
-                  </Box>
-                </Paper>
-              </Grid>
-
-              {/* Keywords */}
-              <Grid item xs={12} md={6}>
-                <Paper
-                  sx={{
-                    p: 3,
-                    borderRadius: "16px",
-                    background: isDark
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(255,255,255,0.8)",
-                    border: isDark
-                      ? "1px solid rgba(255,255,255,0.1)"
-                      : "1px solid rgba(0,0,0,0.08)",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                    height: "100%",
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Box
-                      sx={{
-                        p: 1,
-                        borderRadius: "10px",
-                        background: `${primaryColor}20`,
-                        color: primaryColor,
-                        mr: 2,
-                      }}
-                    >
-                      <AutoFixHigh />
-                    </Box>
-                    <Typography
-                      variant="h6"
-                      fontWeight={600}
-                      sx={{
-                        color: isDark ? "#FFFFFF" : "#000000",
-                      }}
-                    >
-                      Keywords
-                    </Typography>
-                  </Box>
-
-                  <Box display="flex" flexWrap="wrap" gap={1}>
-                    {Array.isArray(result.keywords) ? (
-                      result.keywords.map((k, i) => (
-                        <Chip
-                          key={i}
-                          label={k}
-                          size="small"
-                          sx={{
-                            background: isDark
-                              ? "rgba(196,140,179,0.2)"
-                              : "rgba(196,140,179,0.1)",
-                            color: isDark ? "#E8B4D9" : "#A86B97",
-                            fontWeight: 500,
-                            border: `1px solid ${primaryColor}40`,
-                          }}
-                        />
-                      ))
-                    ) : typeof result.keywords === "object" &&
-                      result.keywords !== null ? (
-                      Object.values(result.keywords).map((k, i) => (
-                        <Chip
-                          key={i}
-                          label={k}
-                          size="small"
-                          sx={{
-                            background: isDark
-                              ? "rgba(196,140,179,0.2)"
-                              : "rgba(196,140,179,0.1)",
-                            color: isDark ? "#E8B4D9" : "#A86B97",
-                            fontWeight: 500,
-                          }}
-                        />
-                      ))
-                    ) : (
-                      <Typography
-                        variant="body2"
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <Box
                         sx={{
-                          color: isDark
-                            ? "rgba(255,255,255,0.7)"
-                            : "rgba(0,0,0,0.6)",
+                          p: 1,
+                          borderRadius: "10px",
+                          background: `${primaryColor}20`,
+                          color: primaryColor,
+                          mr: 2,
                         }}
                       >
-                        {String(result.keywords || "No keywords identified")}
+                        {sectionIcons[section.key]}
+                      </Box>
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        sx={{
+                          color: isDark ? "#FFFFFF" : "#000000",
+                        }}
+                      >
+                        {section.title}
                       </Typography>
-                    )}
-                  </Box>
-                </Paper>
-              </Grid>
-
-              {/* Suitability Score */}
-              <Grid item xs={12}>
-                <Paper
-                  sx={{
-                    p: 3,
-                    borderRadius: "16px",
-                    background: isDark
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(255,255,255,0.8)",
-                    border: isDark
-                      ? "1px solid rgba(255,255,255,0.1)"
-                      : "1px solid rgba(0,0,0,0.08)",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Box
-                      sx={{
-                        p: 1,
-                        borderRadius: "10px",
-                        background: `${primaryColor}20`,
-                        color: primaryColor,
-                        mr: 2,
-                      }}
-                    >
-                      <TrendingUp />
                     </Box>
-                    <Typography
-                      variant="h6"
-                      fontWeight={600}
-                      sx={{
-                        color: isDark ? "#FFFFFF" : "#000000",
-                      }}
-                    >
-                      Suitability Score
-                    </Typography>
-                  </Box>
 
-                  <Box sx={{ mb: 2 }}>
-                    <LinearProgress
-                      variant="determinate"
-                      value={result.suitability || 0}
-                      sx={{
-                        height: 12,
-                        borderRadius: 6,
-                        background: isDark
-                          ? "rgba(255,255,255,0.1)"
-                          : "rgba(0,0,0,0.1)",
-                        "& .MuiLinearProgress-bar": {
-                          background: getSuitabilityColor(
-                            result.suitability || 0
-                          ),
-                          borderRadius: 6,
-                        },
-                      }}
-                    />
-                  </Box>
-
-                  <Typography
-                    variant="h4"
-                    fontWeight={700}
-                    sx={{
-                      color: getSuitabilityColor(result.suitability || 0),
-                      textAlign: "center",
-                    }}
-                  >
-                    {result.suitability || 0}%
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: isDark
-                        ? "rgba(255,255,255,0.7)"
-                        : "rgba(0,0,0,0.6)",
-                      textAlign: "center",
-                      mt: 1,
-                    }}
-                  >
-                    Based on skills match and requirements
-                  </Typography>
-                </Paper>
-              </Grid>
+                    {section.key === "keywords" ? (
+                      <Box display="flex" flexWrap="wrap" gap={1}>
+                        {Array.isArray(result.keywords) ? (
+                          result.keywords.map((k, i) => (
+                            <Chip
+                              key={i}
+                              label={k}
+                              size="small"
+                              sx={{
+                                background: isDark
+                                  ? "rgba(196,140,179,0.2)"
+                                  : "rgba(196,140,179,0.1)",
+                                color: isDark ? "#E8B4D9" : "#A86B97",
+                                fontWeight: 500,
+                                border: `1px solid ${primaryColor}40`,
+                              }}
+                            />
+                          ))
+                        ) : (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: isDark
+                                ? "rgba(255,255,255,0.7)"
+                                : "rgba(0,0,0,0.6)",
+                            }}
+                          >
+                            {String(result.keywords || "No keywords suggested")}
+                          </Typography>
+                        )}
+                      </Box>
+                    ) : (
+                      <Box
+                        component="ul"
+                        sx={{
+                          pl: 2,
+                          m: 0,
+                          "& li": {
+                            color: isDark
+                              ? "rgba(255,255,255,0.8)"
+                              : "rgba(0,0,0,0.8)",
+                            mb: 0.5,
+                            lineHeight: 1.6,
+                          },
+                        }}
+                      >
+                        {Array.isArray(result[section.key]) ? (
+                          result[section.key].map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))
+                        ) : typeof result[section.key] === "object" &&
+                          result[section.key] !== null ? (
+                          Object.values(result[section.key]).map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))
+                        ) : (
+                          <li>{String(result[section.key] || "No data")}</li>
+                        )}
+                      </Box>
+                    )}
+                  </Paper>
+                </Grid>
+              ))}
             </Grid>
           </Box>
         </Fade>

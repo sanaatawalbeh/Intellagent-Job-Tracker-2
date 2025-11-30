@@ -12,12 +12,15 @@ import {
   CircularProgress,
   Alert,
   Fade,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import {
   Psychology,
   AutoFixHigh,
   TrendingUp,
   Warning,
+  Clear,
 } from "@mui/icons-material";
 
 export default function ResumeFeedback() {
@@ -31,6 +34,12 @@ export default function ResumeFeedback() {
 
   const primaryColor = "#C48CB3";
   const secondaryColor = isDark ? "#E8B4D9" : "#A86B97";
+
+  const handleClearText = () => {
+    setText("");
+    setResult(null);
+    setError(null);
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -79,9 +88,16 @@ export default function ResumeFeedback() {
         borderColor: primaryColor,
         borderWidth: "2px",
       },
+      color: isDark ? "#FFFFFF" : "#000000",
     },
     "& .MuiInputLabel-root": {
       color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+    },
+    "& .MuiOutlinedInput-input": {
+      color: isDark ? "#FFFFFF" : "#000000",
+      "&::placeholder": {
+        color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)",
+      },
     },
   };
 
@@ -148,13 +164,32 @@ export default function ResumeFeedback() {
             fullWidth
             required
             sx={textFieldSx}
+            InputProps={{
+              endAdornment: text && (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClearText}
+                    sx={{
+                      color: isDark
+                        ? "rgba(255,255,255,0.5)"
+                        : "rgba(0,0,0,0.4)",
+                      "&:hover": {
+                        color: isDark ? "#FFFFFF" : "#000000",
+                      },
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
             <Button
               type="submit"
               variant="contained"
-              disabled={loading}
+              disabled={loading || !text.trim()}
               sx={{
                 borderRadius: "12px",
                 px: 4,
@@ -174,6 +209,7 @@ export default function ResumeFeedback() {
                   background: isDark
                     ? "rgba(255,255,255,0.1)"
                     : "rgba(0,0,0,0.1)",
+                  color: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)",
                 },
               }}
             >
@@ -185,7 +221,14 @@ export default function ResumeFeedback() {
             </Button>
 
             {error && (
-              <Alert severity="error" sx={{ flex: 1 }}>
+              <Alert
+                severity="error"
+                sx={{
+                  flex: 1,
+                  background: isDark ? "rgba(211,47,47,0.1)" : undefined,
+                  color: isDark ? "#ff5252" : undefined,
+                }}
+              >
                 {error}
               </Alert>
             )}
